@@ -14,7 +14,7 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/api/auth/**", "/api/chat/**", "/api/pdf/**", "/api/email/**", "/api/planner/**", "/api/translator/**").permitAll()
+            .requestMatchers("/api/auth/**", "/api/chat/**", "/api/pdf/**", "/api/email/**", "/api/planner/**", "/api/translator/**", "/api/stats/**").permitAll()
                 .anyRequest().authenticated()
             )
             .headers(headers -> headers.frameOptions(frame -> frame.disable()));

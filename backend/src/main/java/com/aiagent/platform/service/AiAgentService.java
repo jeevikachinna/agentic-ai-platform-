@@ -1,16 +1,25 @@
 package com.aiagent.platform.service;
 
+import com.aiagent.platform.model.ActivityLog;
+import com.aiagent.platform.repository.ActivityLogRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 @Service
 public class AiAgentService {
     private final GeminiCompletionService geminiCompletionService;
+    private final ActivityLogRepository activityLogRepository;
 
-    public AiAgentService(GeminiCompletionService geminiCompletionService) {
+    public AiAgentService(GeminiCompletionService geminiCompletionService, ActivityLogRepository activityLogRepository) {
         this.geminiCompletionService = geminiCompletionService;
+        this.activityLogRepository = activityLogRepository;
+    }
+
+    private void logActivity(String type) {
+        activityLogRepository.save(new ActivityLog(type, LocalDateTime.now()));
     }
 
     public String generateEmailDraft() {
@@ -22,7 +31,9 @@ public class AiAgentService {
         if (subject != null && !subject.isBlank()) {
             prompt = "Draft a " + tone + " email with subject: " + subject + ". The topic is " + topic + ". Keep the tone " + tone + " and make it professional.";
         }
-        return geminiCompletionService.getCompletion(prompt);
+        String result = geminiCompletionService.getCompletion(prompt);
+        logActivity("EMAIL");
+        return result;
     }
 
     public String summarizeText(String text, String summaryType) {
@@ -31,18 +42,40 @@ public class AiAgentService {
             lengthInstruction = "in a detailed paragraph covering all key points";
         }
         String prompt = "Summarize the following text " + lengthInstruction + ":\n\n" + text;
-        return geminiCompletionService.getCompletion(prompt);
+        String result = geminiCompletionService.getCompletion(prompt);
+        logActivity("PDF");
+        return result;
     }
 
     public String generatePlan(String goal, String timeframe) {
         String prompt = "Create a clear, actionable task plan for the following goal: " + goal +
                 ". The timeframe is " + timeframe + ". List the tasks as a numbered list with brief descriptions.";
-        return geminiCompletionService.getCompletion(prompt);
+        String result = geminiCompletionService.getCompletion(prompt);
+        logActivity("PLANNER");
+        return result;
     }
 
     public String translateText(String text, String targetLanguage) {
         String prompt = "Translate the following text into " + targetLanguage + ". Only return the translated text, nothing else:\n\n" + text;
-        return geminiCompletionService.getCompletion(prompt);
+        String result = geminiCompletionService.getCompletion(prompt);
+        logActivity("TRANSLATOR");
+        return result;
+    }
+
+    public String chatWithLogging(String message) {
+        String result = geminiCompletionService.getCompletion(message);
+        logActivity("CHAT");
+        return result;
+    }
+
+    public Map<String, Long> getStats() {
+        return Map.of(
+                "chat", activityLogRepository.countByType("CHAT"),
+                "email", activityLogRepository.countByType("EMAIL"),
+                "pdf", activityLogRepository.countByType("PDF"),
+                "planner", activityLogRepository.countByType("PLANNER"),
+                "translator", activityLogRepository.countByType("TRANSLATOR")
+        );
     }
 
     public List<Map<String, String>> planTasks() {

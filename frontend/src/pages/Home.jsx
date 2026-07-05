@@ -1,4 +1,15 @@
+import { useState, useEffect } from 'react';
+
 function Home() {
+  const [stats, setStats] = useState({ chat: 0, email: 0, pdf: 0, planner: 0, translator: 0 });
+
+  useEffect(() => {
+    fetch('http://localhost:8080/api/stats')
+      .then((res) => res.json())
+      .then((data) => setStats(data))
+      .catch(() => setStats({ chat: 0, email: 0, pdf: 0, planner: 0, translator: 0 }));
+  }, []);
+
   return (
     <section className="hero">
       <div className="card">
@@ -20,11 +31,13 @@ function Home() {
         </div>
       </div>
       <div className="card">
-        <h2>Today’s focus</h2>
+        <h2>📊 Your Activity</h2>
         <ul>
-          <li>Review project brief</li>
-          <li>Draft weekly plan</li>
-          <li>Respond to customer follow-up</li>
+          <li>💬 Chat conversations: <strong>{stats.chat}</strong></li>
+          <li>✉️ Emails generated: <strong>{stats.email}</strong></li>
+          <li>📄 PDFs summarized: <strong>{stats.pdf}</strong></li>
+          <li>📅 Plans created: <strong>{stats.planner}</strong></li>
+          <li>🌐 Translations done: <strong>{stats.translator}</strong></li>
         </ul>
       </div>
     </section>
