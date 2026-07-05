@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { FileText } from "lucide-react";
 
 function PdfAssistant() {
   const [text, setText] = useState('');
@@ -55,7 +56,10 @@ function PdfAssistant() {
         </button>
       </div>
 
-      <h3 style={{ marginTop: '1rem' }}>Summary</h3>
+      <h3>
+  <FileText size={24} style={{ marginRight: "8px", verticalAlign: "middle" }} />
+  PDF Assistant
+</h3>
       <textarea
         rows="12"
         style={{ width: '100%', fontSize: '1rem', padding: '0.75rem', lineHeight: '1.5' }}

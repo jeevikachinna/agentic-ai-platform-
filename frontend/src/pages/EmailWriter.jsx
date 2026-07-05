@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Mail } from "lucide-react";
 
 function EmailWriter() {
   const [subject, setSubject] = useState('');
@@ -63,7 +64,10 @@ function EmailWriter() {
         </button>
       </div>
 
-      <h3 style={{ marginTop: '1rem' }}>Generated Email</h3>
+      <h3>
+  <Mail size={24} style={{ marginRight: "8px", verticalAlign: "middle" }} />
+  Email Writer
+</h3>
       <textarea
         rows="18"
         style={{ width: '100%', fontSize: '1rem', padding: '0.75rem', lineHeight: '1.5' }}

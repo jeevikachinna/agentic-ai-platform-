@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Calendar } from "lucide-react";
 
 function Planner() {
   const [goal, setGoal] = useState('');
@@ -56,7 +57,10 @@ function Planner() {
         </button>
       </div>
 
-      <h3 style={{ marginTop: '1rem' }}>Your Plan</h3>
+      <h3>
+  <Calendar size={24} style={{ marginRight: "8px", verticalAlign: "middle" }} />
+  Planner
+</h3>
       <textarea
         rows="14"
         style={{ width: '100%', fontSize: '1rem', padding: '0.75rem', lineHeight: '1.5' }}

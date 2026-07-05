@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Bot, Mail, Calendar, FileText, Languages } from "lucide-react";
 
 function Home() {
   const [stats, setStats] = useState({ chat: 0, email: 0, pdf: 0, planner: 0, translator: 0 });
@@ -17,7 +18,10 @@ function Home() {
         <p>Automate chats, summarize PDFs, draft emails, plan tasks, and translate content in one elegant workspace.</p>
         <div className="grid">
           <div className="panel">
-            <h3>🤖 AI Chat</h3>
+            <h3>
+  <Bot size={24} style={{ marginRight: "8px", verticalAlign: "middle" }} />
+  AI Chat
+</h3>
             <p>Get instant assistance for brainstorming and decision support.</p>
           </div>
           <div className="panel">

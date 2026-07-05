@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Languages } from "lucide-react";
 
 function Translator() {
   const [text, setText] = useState('');
@@ -59,7 +60,10 @@ function Translator() {
         </button>
       </div>
 
-      <h3 style={{ marginTop: '1rem' }}>Translation</h3>
+      <h3>
+  <Languages size={24} style={{ marginRight: "8px", verticalAlign: "middle" }} />
+  Translator
+</h3>
       <textarea
         rows="10"
         style={{ width: '100%', fontSize: '1rem', padding: '0.75rem', lineHeight: '1.5' }}
