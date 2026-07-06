@@ -73,7 +73,7 @@ AI Agent/
 cd backend
 mvn spring-boot:run
 ```
-Runs at: `http://localhost:8080`
+Runs at: `https://agentic-ai-platform-1-wh0u.onrender.com`
 
 ### Frontend
 ```
@@ -81,7 +81,7 @@ cd frontend
 npm install
 npm run dev
 ```
-Runs at: `http://localhost:3000`
+Runs at: `https://agentic-ai-platform-1-wh0u.onrender.com`
 
 ### Configuration
 Add your Gemini API key in `backend/src/main/resources/application.properties`:

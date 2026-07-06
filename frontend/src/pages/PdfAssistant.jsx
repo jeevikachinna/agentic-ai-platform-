@@ -12,7 +12,7 @@ function PdfAssistant() {
 
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:8080/api/pdf/summarize', {
+      const response = await fetch('https://agentic-ai-platform-1-wh0u.onrender.com/api/pdf/summarize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text, summaryType }),

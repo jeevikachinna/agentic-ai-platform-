@@ -5,7 +5,7 @@ function Home() {
   const [stats, setStats] = useState({ chat: 0, email: 0, pdf: 0, planner: 0, translator: 0 });
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/stats')
+    fetch('https://agentic-ai-platform-1-wh0u.onrender.com/api/stats')
       .then((res) => res.json())
       .then((data) => setStats(data))
       .catch(() => setStats({ chat: 0, email: 0, pdf: 0, planner: 0, translator: 0 }));

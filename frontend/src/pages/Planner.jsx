@@ -12,7 +12,7 @@ function Planner() {
 
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:8080/api/planner/generate', {
+      const response = await fetch('https://agentic-ai-platform-1-wh0u.onrender.com/api/planner/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ goal, timeframe }),
