@@ -25,9 +25,21 @@ function Chat() {
 
       const result = await response.text();
 
+      let displayText = result;
+      if (response.ok) {
+        try {
+          const parsed = JSON.parse(result);
+          displayText = parsed.reply || parsed.message || result;
+        } catch (e) {
+          displayText = result; // not JSON, use as-is
+        }
+      } else {
+        displayText = `Error: ${result}`;
+      }
+
       setMessages((prev) => [
         ...prev,
-        { sender: 'Agent', text: response.ok ? result : `Error: ${result}` },
+        { sender: 'Agent', text: displayText },
       ]);
     } catch (error) {
       setMessages((prev) => [
