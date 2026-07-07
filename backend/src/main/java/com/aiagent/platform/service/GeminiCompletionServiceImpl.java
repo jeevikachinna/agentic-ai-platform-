@@ -1,5 +1,6 @@
 package com.aiagent.platform.service;
 
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -10,6 +11,9 @@ public class GeminiCompletionServiceImpl implements GeminiCompletionService {
     private final RestTemplate restTemplate;
     private final String apiKey;
     private final String model;
+
+    private static final int MAX_RETRIES = 3;
+    private static final long INITIAL_DELAY_MS = 2000;
 
     public GeminiCompletionServiceImpl(String apiKey, String model) {
         this.restTemplate = new RestTemplate();
@@ -27,24 +31,48 @@ public class GeminiCompletionServiceImpl implements GeminiCompletionService {
             return "Gemini API key or model is not configured.";
         }
 
-        try {
-            String url = UriComponentsBuilder
-                    .fromHttpUrl("https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent")
-                    .queryParam("key", apiKey)
-                    .toUriString();
+        String url = UriComponentsBuilder
+                .fromHttpUrl("https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent")
+                .queryParam("key", apiKey)
+                .toUriString();
 
-            Map<String, Object> payload = Map.of(
-                    "contents", List.of(Map.of("parts", List.of(Map.of("text", message))))
-            );
+        Map<String, Object> payload = Map.of(
+                "contents", List.of(Map.of("parts", List.of(Map.of("text", message))))
+        );
 
-            Map<String, Object> response = restTemplate.postForObject(url, payload, Map.class);
-            return extractText(response);
-        } catch (Exception ex) {
-            String errorMessage = "Gemini request failed: " + ex.getMessage();
-            System.err.println(errorMessage);
-            ex.printStackTrace();
-            throw new RuntimeException(errorMessage, ex);
+        long delay = INITIAL_DELAY_MS;
+
+        for (int attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+            try {
+                Map<String, Object> response = restTemplate.postForObject(url, payload, Map.class);
+                return extractText(response);
+
+            } catch (HttpServerErrorException.ServiceUnavailable ex) {
+                // 503 - Gemini is overloaded, retry after a delay
+                System.err.println("Attempt " + attempt + " failed: Gemini 503 Service Unavailable.");
+
+                if (attempt == MAX_RETRIES) {
+                    return "The AI service is currently experiencing high demand. Please try again in a moment.";
+                }
+
+                try {
+                    Thread.sleep(delay);
+                } catch (InterruptedException interruptedEx) {
+                    Thread.currentThread().interrupt();
+                    return "Request was interrupted. Please try again.";
+                }
+
+                delay *= 2; // exponential backoff: 2s, 4s, 8s...
+
+            } catch (Exception ex) {
+                String errorMessage = "Gemini request failed: " + ex.getMessage();
+                System.err.println(errorMessage);
+                ex.printStackTrace();
+                return "Something went wrong while contacting the AI service. Please try again.";
+            }
         }
+
+        return "Unable to reach the AI service. Please try again later.";
     }
 
     @SuppressWarnings("unchecked")
