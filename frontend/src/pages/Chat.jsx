@@ -31,7 +31,7 @@ function Chat() {
           const parsed = JSON.parse(result);
           displayText = parsed.reply || parsed.message || result;
         } catch (e) {
-          displayText = result; // not JSON, use as-is
+          displayText = result; 
         }
       } else {
         displayText = `Error: ${result}`;
